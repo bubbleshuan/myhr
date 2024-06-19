@@ -56,7 +56,8 @@ export default {
       console.log(this.ruleForm.mobile)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          console.log(this)
+          this.$store.dispatch('user/login', this.ruleForm)
         } else {
           console.log('error submit!!')
           return false
