@@ -1,4 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login } from '@/api/user'
 const state = {
   token: getToken()
 }
@@ -15,11 +16,12 @@ const mutations = {
 }
 
 const actions = {
-  login(context, data) {
+  async login(context, data) {
     console.log('context---------' + context)
     console.log('data---------' + data)
-    // 假设调过接口，返回token123456
-    context.commit('setToken', '123456')
+    // 假设调过接口，返回token123456密码是hm#qd@23!
+    const token = await login(data)
+    context.commit('setToken', token)
   }
 }
 
