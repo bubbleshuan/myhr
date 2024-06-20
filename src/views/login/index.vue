@@ -28,9 +28,9 @@ export default {
   data() {
     return {
       ruleForm: {
-        mobile: '',
-        password: '',
-        isAgree: false
+        mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+        password: process.env.NODE_ENV === 'development' ? 'hm#qd@23!' : '',
+        isAgree: process.env.NODE_ENV === 'development'
       },
       rules: {
         mobile: [
@@ -54,10 +54,11 @@ export default {
   methods: {
     submitForm(formName) {
       console.log(this.ruleForm.mobile)
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async(valid) => {
         if (valid) {
           console.log(this)
-          this.$store.dispatch('user/login', this.ruleForm)
+          await this.$store.dispatch('user/login', this.ruleForm)
+          this.$router.push('/')
         } else {
           console.log('error submit!!')
           return false
