@@ -7,3 +7,11 @@ export function login(data) {
     data
   })
 }
+
+export function getUserInfo() {
+  console.log('222')
+  return request({
+    url: '/sys/profile',
+    method: 'get'
+  })
+}
