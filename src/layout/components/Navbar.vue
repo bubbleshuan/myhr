@@ -15,20 +15,38 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              首页
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
+          <a target="_blank" href="https://github.com/bubbleshuan/myhr">
+            <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+          <a target="_blank" @click.prevent="changePass">
+            <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+
+          <el-dropdown-item @click.native="logout">
+            <span style="display:block;">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-dialog title="修改密码" :visible.sync="visible" width="400px" :modal="false" @close="resetForm">
+        <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="120px" class="demo-ruleForm">
+          <el-form-item label="旧密码" prop="oldPass">
+            <el-input v-model="ruleForm.oldPass" type="password" autocomplete="off" size="small" />
+          </el-form-item>
+          <el-form-item label="新密码" prop="newPass">
+            <el-input v-model="ruleForm.newPass" type="password" autocomplete="off" size="small" />
+          </el-form-item>
+          <el-form-item label="确认密码" prop="checkPass">
+            <el-input v-model="ruleForm.checkPass" size="small" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+            <el-button @click="resetForm('ruleForm')">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -37,11 +55,40 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import { changePass } from '@/api/user'
 export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.ruleForm.newPass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      visible: false,
+      ruleForm: {
+        oldPass: '',
+        newPass: '',
+        checkPass: ''
+      }, rules: {
+        oldPass: [
+          { required: true, message: '请输入旧密码', trigger: 'blur' }
+        ],
+        newPass: [
+          { required: true, message: '请输入新密码', trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true, validator: validatePass2, trigger: 'blur' }
+        ]
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -56,7 +103,29 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/login`)
+    },
+    changePass() {
+      this.visible = true
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(async(valid) => {
+        if (valid) {
+          const data = {
+            'oldPassword': this.ruleForm.oldPass,
+            'newPassword': this.ruleForm.newPass
+          }
+          await changePass(data)
+          this.$message.success('修改密码成功')
+          this.resetForm()
+        } else {
+          return false
+        }
+      })
+    },
+    resetForm() {
+      this.$refs.ruleForm.resetFields()
+      this.visible = false
     }
   }
 }

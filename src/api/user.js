@@ -9,10 +9,17 @@ export function login(data) {
 }
 
 export function getUserInfo() {
-  console.log('222')
   return request({
     url: '/sys/profile',
     method: 'get'
+  })
+}
+
+export function changePass(data) {
+  return request({
+    url: '/sys/user/updatePass',
+    method: 'put',
+    data
   })
 }
 
