@@ -27,10 +27,13 @@ const actions = {
     context.commit('setToken', token)
   },
   async getUserInfo(context) {
-    console.log('1111')
     const data = await getUserInfo()
-    console.log(data)
     context.commit('setUserInfo', data)
+  },
+  logout(context) {
+    console.log(111)
+    context.commit('removeToken')
+    context.commit('setUserInfo', {})
   }
 }
 
