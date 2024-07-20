@@ -27,8 +27,10 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
+  // process.env是node.js的全局变量
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
+  // vue-cli代理解决跨域（开发环境） 浏览器的同源策略：协议名，主机，端口号都相同，才可以访问。vue-cli是node环境,同源策略只适用于浏览器。本地先向vue-cli发起请求，vue-cli再向后端发起请求
   devServer: {
     port: port,
     open: true,
@@ -39,6 +41,7 @@ module.exports = {
     // before: require('./mock/mock-server.js')
     proxy: {
       '/api': {
+        // target目标服务器  比如代理到百度、网易
         target: 'https://heimahr.itheima.net'
       }
     }

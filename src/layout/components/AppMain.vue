@@ -1,6 +1,7 @@
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
+      <!-- 这里的router-view是二级路由(用来显示二级路由组件)，因为layout是一级组件，appmain在一级组件下面，是二级 -->
       <router-view :key="key" />
     </transition>
   </section>

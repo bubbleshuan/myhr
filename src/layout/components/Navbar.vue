@@ -8,6 +8,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-if="avatar" :src="avatar" class="user-avatar">
+          <!-- name?.charAt(0)可选链操作符，为null或者undefined不会报错 -->
           <span v-else class="username">{{ name?.charAt(0) }}</span>
           <span class="name">{{ name }}</span>
           <i class="el-icon-setting" />
@@ -21,34 +22,41 @@
           <a target="_blank" href="https://github.com/bubbleshuan/myhr">
             <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
+          <!--prevent阻止默认事件  -->
           <a target="_blank" @click.prevent="changePass">
             <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
 
+          <!-- native事件修饰符 -->
+          <!-- 注册组件的根元素的原生事件 h5的事件-->
+          <!-- el-dropdown-item并不是h5标签，这个点击事件加在el-dropdown-item生成h5的标签上 -->
+          <!-- el-dropdown-item这个组件本身并没有click事件 -->
           <el-dropdown-item @click.native="logout">
             <span style="display:block;">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog title="修改密码" :visible.sync="visible" width="400px" :modal="false" @close="resetForm">
-        <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="120px" class="demo-ruleForm">
-          <el-form-item label="旧密码" prop="oldPass">
-            <el-input v-model="ruleForm.oldPass" type="password" autocomplete="off" size="small" />
-          </el-form-item>
-          <el-form-item label="新密码" prop="newPass">
-            <el-input v-model="ruleForm.newPass" type="password" autocomplete="off" size="small" />
-          </el-form-item>
-          <el-form-item label="确认密码" prop="checkPass">
-            <el-input v-model="ruleForm.checkPass" size="small" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-            <el-button @click="resetForm('ruleForm')">取消</el-button>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
     </div>
+    <!-- sync可以接受子组件传过来的事件和值 -->
+    <el-dialog title="修改密码" :visible.sync="visible" width="400px" :modal="false" @close="resetForm">
+      <el-form ref="ruleForm" :model="ruleForm" status-icon :rules="rules" label-width="120px" class="demo-ruleForm">
+        <el-form-item label="旧密码" prop="oldPass">
+          <el-input v-model="ruleForm.oldPass" type="password" autocomplete="off" size="small" show-password />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPass">
+          <el-input v-model="ruleForm.newPass" type="password" autocomplete="off" size="small" show-password />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input v-model="ruleForm.checkPass" size="small" show-password type="password" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button @click="resetForm('ruleForm')">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -62,6 +70,7 @@ export default {
     Hamburger
   },
   data() {
+    // 这里要用箭头函数，否则this不对
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
@@ -91,6 +100,8 @@ export default {
     }
   },
   computed: {
+    // mapGetters是辅助函数，用来引入vuex的getters里面的属性
+    // 引入头像和用户名称
     ...mapGetters([
       'sidebar',
       'avatar',
@@ -102,6 +113,7 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
+      // 调action
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login`)
     },

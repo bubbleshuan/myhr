@@ -40,6 +40,8 @@ import socialRouter from './modules/social'
  */
 export const constantRoutes = [
   {
+    // 地址和组件的对应关系
+    // 一级路由
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -55,6 +57,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    // 路由子节点
     children: [
       {
         path: 'dashboard',

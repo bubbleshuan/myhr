@@ -6,12 +6,14 @@
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
       </div>
+      <!-- 使用该组件是因为下面注册了这个组件 -->
       <app-main />
     </div>
   </div>
 </template>
 
 <script>
+// 这里的./是相对路径
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 

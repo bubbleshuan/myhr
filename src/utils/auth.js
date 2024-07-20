@@ -1,3 +1,4 @@
+// js-cookie和localstorage都是前端存储缓存的
 import Cookies from 'js-cookie'
 
 const TokenKey = 'vue_admin_template_token'

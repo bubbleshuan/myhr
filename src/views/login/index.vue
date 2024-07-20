@@ -34,6 +34,7 @@ export default {
       },
       rules: {
         mobile: [
+          // trigger: 'blur'触发方式：失去焦点触发
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
         ],
@@ -41,6 +42,10 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 16, message: '密码必须在6到16位之间', trigger: 'blur' }
         ],
+        // required只能检测 null undefined "" ,不能检测true 或者false
+        // validator自定义校验函数 rule:校验规则 value:校验的值
+        // callback函数 ————相当于promise里面的resolve 和 reject，resolve 和 reject必须执行，否则promis没有结束.同样的callback函数也必须执行，否则也不会结束
+        // 成功的时候执行callback()  失败的时候执行callback(new Error(错误信息))
         isAgree: [
           { validator: (rule, value, callback) => {
             value ? callback() : callback(new Error('请勾选协议'))
@@ -57,6 +62,8 @@ export default {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
           console.log(this)
+          // 这里没有直接调用请求，而是调用的vuex的action。说明肯定有数据需要共享。这里共享的是token数据
+          // vuex中的action返回的promise，因此是异步的
           await this.$store.dispatch('user/login', this.ruleForm)
           this.$router.push('/')
         } else {

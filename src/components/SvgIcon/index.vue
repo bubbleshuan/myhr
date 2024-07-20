@@ -1,3 +1,8 @@
+<!-- 扩展svg图标，只需要把UI设计师准备好的svg图标拖拽到svg文件夹，正常使用即可 -->
+ <!-- src/icons/svg目录下的图标都可以使用
+  图标文件名直接设置为svg-icon组件的iconClass属性
+
+ -->
 <template>
   <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners" />
   <svg v-else :class="svgClass" aria-hidden="true" v-on="$listeners">

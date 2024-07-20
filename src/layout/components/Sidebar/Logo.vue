@@ -49,6 +49,7 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
+    // 这里只设置宽，不设置高，高就会自适应。
       width: 140px;
       vertical-align: middle;
       margin-right: 12px;
