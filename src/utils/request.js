@@ -33,8 +33,6 @@ service.interceptors.response.use((response) => {
     return Promise.reject(new Error(message))
   }
 }, async(error) => {
-  debugger
-  console.log(222)
   if (error.response.status === 401) {
     Message({
       type: 'warning',
