@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="title"
+    :title="showTitle"
     :visible="dialogVisible"
     width="50%"
     @close="close"
@@ -41,7 +41,7 @@
 
 </template>
 <script>
-import { getDepartmentList, getManagerList, addDepartment, getDepartmentDetail } from '@/api/department'
+import { getDepartmentList, getManagerList, addDepartment, getDepartmentDetail, updateDepartment } from '@/api/department'
 
 export default {
   props: {
@@ -54,6 +54,7 @@ export default {
       default: null
     }
   },
+
   data() {
     return {
       managerList: [],
@@ -71,7 +72,10 @@ export default {
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }, { trigger: 'blur',
             validator: async(rule, value, callback) => {
               // value就是输入的名称
-              const result = await getDepartmentList()
+              let result = await getDepartmentList()
+              if (this.deptForm.id) {
+                result = result.filter(item => item.id !== this.deptForm.id)
+              }
               //   result.some判断是否包含值
               if (result.some(item => item.name === value)) {
                 callback(new Error('该部门已经有该名称了'))
@@ -89,7 +93,10 @@ export default {
             trigger: 'blur',
             validator: async(rule, value, callback) => {
               // value就是输入的编码
-              const result = await getDepartmentList()
+              let result = await getDepartmentList()
+              if (this.deptForm.id) {
+                result = result.filter(item => item.id !== this.deptForm.id)
+              }
               //   result.some判断是否包含值
               if (result.some(item => item.code === value)) {
                 callback(new Error('该部门已经有该编码了'))
@@ -110,6 +117,11 @@ export default {
 
     }
   },
+  computed: {
+    showTitle() {
+      return this.deptForm.id ? '修改部门' : '新增部门'
+    }
+  },
 
   created() {
     this.getManagerList()
@@ -124,9 +136,17 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async(valid) => {
         if (valid) {
-          console.log('currentNodeId:' + this.currentNodeId)
-          await addDepartment({ ...this.deptForm, pid: this.currentNodeId })
-          this.$message.success('新增成功')
+          let msg = '新增'
+          // 没有id代表是新增
+          if (!this.deptForm.id) {
+            await addDepartment({ ...this.deptForm, pid: this.currentNodeId })
+            // 有id代表的是修改
+          } else {
+            await updateDepartment(this.deptForm)
+            msg = '修改'
+          }
+
+          this.$message.success(`${msg}成功`)
           this.$emit('updateDepartment')
           this.resetForm(formName)
         } else {
@@ -136,10 +156,19 @@ export default {
       })
     },
     resetForm(formName) {
+      // resetFields只能重置在模版中绑定的数据
       this.$refs[formName].resetFields()
       this.$emit('update:dialogVisible', false)
     },
     close() {
+      this.deptForm = {
+        code: '', // 部门编码
+        introduce: '', // 部门介绍
+        managerId: '', // 部门负责人id
+        name: '', // 部门名称
+        pid: '' // 父级部门的id
+      }
+      this.$refs.form.resetFields()
       // 修改父组件的值  子传父
       this.$emit('update:dialogVisible', false)
     }

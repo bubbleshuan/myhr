@@ -81,6 +81,9 @@ export default {
           this.$refs.addDept.getDepartmentDetail()
         })
       }
+      if (type === 'deleteDep') {
+        // todo
+      }
     },
     async getDepartmentList() {
       // 这里不是this.getDepartmentList()，否则会死循环。我们要调用的是导入进来的方法。

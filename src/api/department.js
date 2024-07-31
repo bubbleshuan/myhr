@@ -27,3 +27,18 @@ export function getDepartmentDetail(id) {
     url: `/company/department/${id}`
   })
 }
+
+export function updateDepartment(data) {
+  return request({
+    url: `/company/department/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function delDepartment(id) {
+  return request({
+    url: `/company/department/${id}`,
+    method: 'delete'
+  })
+}
