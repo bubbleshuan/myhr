@@ -30,7 +30,7 @@
         <el-row type="flex" justify="center">
           <el-col :span="12">
             <el-button type="primary" size="mini" @click="submitForm('form')">确定</el-button>
-            <el-button size="mini" @click="resetForm('form')">取消</el-button>
+            <el-button size="mini" @click="close">取消</el-button>
           </el-col>
         </el-row>
 
@@ -147,19 +147,16 @@ export default {
           }
 
           this.$message.success(`${msg}成功`)
+          // 子传父，让父去更新列表数据
           this.$emit('updateDepartment')
-          this.resetForm(formName)
+          this.close()
         } else {
           console.log('error submit!!')
           return false
         }
       })
     },
-    resetForm(formName) {
-      // resetFields只能重置在模版中绑定的数据
-      this.$refs[formName].resetFields()
-      this.$emit('update:dialogVisible', false)
-    },
+
     close() {
       this.deptForm = {
         code: '', // 部门编码
@@ -168,6 +165,7 @@ export default {
         name: '', // 部门名称
         pid: '' // 父级部门的id
       }
+      // resetFields只能重置在模版中绑定的数据
       this.$refs.form.resetFields()
       // 修改父组件的值  子传父
       this.$emit('update:dialogVisible', false)

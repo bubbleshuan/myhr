@@ -31,7 +31,9 @@
         </template>
       </el-tree>
     </div>
-    <!-- sync表示会接受子组件的事件  update:showDialog ,传的值会赋值给showDialog这个属性-->
+    <!-- sync修饰dialog-visible表示会接受子组件的事件  事件是：update:showDialog ,传的值会赋值给showDialog这个属性
+     sync修饰符可以修饰props属性
+     此时的sync简化了父组件的接收，不简化的话，父组件要定义接收事件的方法-->
     <add-dept ref="addDept" :dialog-visible.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartmentList" />
   </div>
 </template>
