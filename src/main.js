@@ -32,9 +32,9 @@ if (process.env.NODE_ENV === 'production') {
 
 // set ElementUI lang to EN
 // Vue.use全局注册ElementUI的组件（<el-form-item>等ElementUI组件可以全局使用）
-Vue.use(ElementUI, { locale })
+// Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
