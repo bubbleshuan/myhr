@@ -9,16 +9,14 @@
       <div class="right">
         <el-row class="opeate-tools" type="flex" justify="end">
           <el-button size="mini" type="primary">添加员工</el-button>
-          <el-button size="mini">excel导入</el-button>
-          <el-button size="mini">excel导出</el-button>
+          <el-button size="mini" @click="importEmployee">excel导入</el-button>
+          <!-- <el-button size="mini" @click="exportEmployee">excel导出</el-button> -->
+          <el-button size="mini" @click="exportEmployee">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
         <el-table
           :data="users"
           style="width: 100%"
-          :default-sort="[{prop: 'date', order: 'descending'},
-                          {prop: 'workNumber', order: 'descending'}
-          ]"
         >
           <!-- <el-table-column
 
@@ -94,17 +92,25 @@
 
       </div>
     </div>
+    <import-excel :show-excel-dialog.sync="showExcelDialog" />
   </div>
 </template>
 
 <script>
 import { getDepartmentList } from '@/api/department'
 import { changeListToTree } from '@/utils/index'
-import { getUserList } from '@/api/employee'
+import { getUserList, exportEmployee } from '@/api/employee'
+import FileSaver from 'file-saver'
+import ImportExcel from '@/views/employee/components/import-excel.vue'
 export default {
   name: 'Employee',
+  components: {
+    ImportExcel
+
+  },
   data() {
     return {
+      showExcelDialog: false,
       depts: [],
       defaultProps: {
         children: 'children',
@@ -176,6 +182,15 @@ export default {
         this.queryParams.page = 1
         this.getUserList()
       }, 300)
+    },
+    async exportEmployee() {
+      const result = await exportEmployee()
+      // console.log(result)
+      // // FileSaver.saveAs(blob对象,文件名)
+      FileSaver.saveAs(result, '员工信息表.xlsx')
+    },
+    importEmployee() {
+      this.showExcelDialog = true
     }
   }
 }

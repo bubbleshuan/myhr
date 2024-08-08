@@ -25,6 +25,10 @@ service.interceptors.request.use((config) => {
 
 // 响应拦截器 主要作用：解构响应数据 和处理异常
 service.interceptors.response.use((response) => {
+  // 判断是不是blob
+  // 返回Blob对象
+  if (response.data instanceof Blob) return response.data
+  // 默认json格式
   const { data, success, message } = response.data
   if (success) {
     return data
