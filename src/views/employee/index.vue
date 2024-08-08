@@ -10,7 +10,6 @@
         <el-row class="opeate-tools" type="flex" justify="end">
           <el-button size="mini" type="primary">添加员工</el-button>
           <el-button size="mini" @click="importEmployee">excel导入</el-button>
-          <!-- <el-button size="mini" @click="exportEmployee">excel导出</el-button> -->
           <el-button size="mini" @click="exportEmployee">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
@@ -72,9 +71,13 @@
             <template slot-scope="{row}">
               <el-button type="text" size="mini" @click="handleClick(row)">查看</el-button>
               <el-button type="text" size="mini">角色</el-button>
-              <el-button type="text" size="mini">删除</el-button>
-            </template>
-          </el-table-column>
+              <el-popconfirm
+                title="确认删除该行数据吗？"
+                @onConfirm="delEmployee(row)"
+              >
+                <el-button slot="reference" style="margin-left: 10px;" type="text" size="mini">删除</el-button>
+              </el-popconfirm>
+            </template></el-table-column>
         </el-table>
         <!-- 分页 -->
         <el-row type="flex" justify="end" style="height: 60px;" align="middle">
@@ -99,7 +102,7 @@
 <script>
 import { getDepartmentList } from '@/api/department'
 import { changeListToTree } from '@/utils/index'
-import { getUserList, exportEmployee } from '@/api/employee'
+import { getUserList, exportEmployee, delEmployee } from '@/api/employee'
 import FileSaver from 'file-saver'
 import ImportExcel from '@/views/employee/components/import-excel.vue'
 export default {
@@ -191,6 +194,14 @@ export default {
     },
     importEmployee() {
       this.showExcelDialog = true
+    },
+    async delEmployee(row) {
+      await delEmployee(row.id)
+      if (this.users.length === 1 && this.queryParams.page > 1) {
+        this.queryParams.page--
+      }
+      this.getUserList()
+      this.$message({ message: '删除员工成功', type: 'success' })
     }
   }
 }
