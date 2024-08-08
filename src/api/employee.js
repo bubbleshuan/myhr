@@ -25,3 +25,11 @@ export function importTemplate() {
     responseType: 'blob'
   })
 }
+
+export function uploadExcel(data) {
+  return request({
+    url: '/sys/user/import',
+    method: 'post',
+    data // form-data类型 因为要上传文件类型
+  })
+}
