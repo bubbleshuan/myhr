@@ -37,7 +37,7 @@
               <el-form-item label="部门" prop="departmentId">
                 <!-- 放置及联部门组件 -->
                 <!-- inputw样式会给到selecttree中 template第一层的组件 -->
-                <select-tree class="inputW" />
+                <select-tree v-model="employeeForm.departmentId" class="inputW" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -161,8 +161,11 @@ export default {
       this.$refs.employeeForm.validate(async(isOk) => {
         if (isOk) {
           await addEmployee(this.employeeForm)
+          this.$refs.employeeForm.resetFields()
           this.$message({ message: '新增员工成功', type: 'success' })
-          // $router.push('employee')
+          this.$router.push('/employee')
+        } else {
+          return false
         }
       })
     }
